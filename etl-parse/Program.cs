@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.Diagnostics.Tracing.Parsers;
+using Microsoft.Diagnostics.Tracing;
 
 namespace etl_explore
 {
@@ -6,7 +8,13 @@ namespace etl_explore
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var location = "";
+            using(var source = new ETWTraceEventSource(location)) {
+                var parser = new DynamicTraceEventParser(source);
+                parser.All += data => {
+                    Console.WriteLine($"{data.EventName}");
+                };
+            }
         }
     }
 }
